@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
+
+        .resume-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #007BFF;
+        }
+
+        .section-title {
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            color: #007BFF;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+        }
+
+        .btn {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container resume-container">
+        <div class="profile-header">
+            <img src="/{{request.user.Profile_Pic}}" alt="Profile Picture" class="profile-pic">
+            <h1 class="profile-name">{{request.user.username}}</h1>
+            
+            
+            {% if request.user.user_type == 'recuriters' %}
+            
+            <a href="{% url 'created_JOb' %}" class="btn btn-outline-secondary"><b>Created Job</b></a> 
+
+            {% endif %}
+
+
+            <div class="text-center">
+                
+                <a href="#" class="btn btn-primary">Edit Profile</a>
+                
+                </div>
+
+            
+            
+            <h2 class="profile-designation">{{ Information.Designation }}</h2>
+            <p><strong>Email:</strong>{{ user.email }}</p>
+            <p><strong>Contact Number:</strong>{{request.user.contact_no}}</p>
+            
+
+        </div>
+
+        
+
+        <div class="text-center">
+
+            
+            
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+  
+{% endblock body %}
+
+

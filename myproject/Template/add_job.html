@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Job</title>
+</head>
+<body>
+    <h1>Add Job</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            <label for="title">Job Title:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div>
+            <label for="Number_of_opening">Number of Openings:</label>
+            <input type="number" id="Number_of_opening" name="Number_of_opening" required>
+        </div>
+        <div>
+            <label for="category">Category:</label>
+            <select id="category" name="category" required>
+                <option value="full_time">Full Time</option>
+                <option value="part_time">Part Time</option>
+            </select>
+        </div>
+        <div>
+            <label for="Job_descriptons">Job Descriptions:</label>
+            <textarea id="Job_descriptons" name="Job_descriptons" required></textarea>
+        </div>
+        <div>
+            <label for="skill">Skills:</label>
+            <input type="text" id="skill" name="skill" required>
+        </div>
+        <div>
+            <label for="Image">Upload Image:</label>
+            <input type="file" id="Image" name="Image" accept="image/*">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+
+    
+{% endblock body %}
+

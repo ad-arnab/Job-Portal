@@ -1,0 +1,19 @@
+<nav>
+    <div class="logo">Job Portal</div>
+    <ul class="nav-links">
+
+        <li><a href="{% url 'job_feed' %}">Job Feed</a></li>
+
+        {% if request.user.user_type == 'recuriters' %}
+        <li><a href="{% url 'add_job' %}">Add Job</a></li>
+        {% endif %}
+
+
+        <li><a href="{% url 'profilePage' %}">Profile</a></li>
+        <li><a href="{% url 'logoutPage' %}">Logout</a></li>
+        
+    </ul>
+    <div class="search-container">
+        
+    </div>
+</nav>

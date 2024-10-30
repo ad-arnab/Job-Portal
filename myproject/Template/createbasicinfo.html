@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<div class="form-container">
+  <h1>Create Profile</h1>
+
+  {% include 'Includes/message.html' %}
+
+  <form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="contact_No">User Name:</label>
+      <input
+        readonly
+        type="text"
+        id="contact_No"
+        value="{{request.user.username}}"
+        ,
+        name="username"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="contact_No">First Name:</label>
+      <input
+        type="text"
+        id="contact_No"
+        value="{{request.user.first_name}}"
+        ,
+        name="first_name"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="contact_No">Last Name:</label>
+      <input
+        type="text"
+        id="contact_No"
+        value="{{request.user.last_name}}"
+        name="last_name"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="contact_No">Contact Number:</label>
+      <input type="text" id="contact_No" name="contact_No" required />
+    </div>
+
+    <div class="form-group">
+      <label for="Designation">Designation:</label>
+      <input type="text" id="Designation" name="Designation" required />
+    </div>
+
+    <div class="form-group">
+      <label for="Profile_Pic">Profile Picture:</label>
+      <input type="file" id="Profile_Pic" name="Profile_Pic" accept="image/*" />
+    </div>
+
+    
+
+    <div class="form-group">
+      <label for="Age">Age:</label>
+      <input type="number" id="Age" name="Age" required />
+    </div>
+
+    <div class="form-group">
+      <label for="Gender">Gender:</label>
+      <select id="Gender" name="Gender" required>
+        <option value="">Select</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+{% endblock body %}
+
+
+

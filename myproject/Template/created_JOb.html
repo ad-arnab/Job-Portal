@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Feed</title>
+    <style>
+        /* General body styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        /* Header styles */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Header cell styles */
+        th {
+            background-color: #007BFF; /* Bootstrap primary color */
+            color: white;
+        }
+
+        /* Row hover effect */
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Image styles */
+        img {
+            max-width: 100px; /* Set a fixed width for images */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+        /* No image cell */
+        td img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Link styles */
+        a {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #007BFF; /* Button background color */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+
+        .delete {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #c02d2d; /* Button background color */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .delete:hover {
+            background-color: #b93e3e; /* Darker shade on hover */
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            th, td {
+                padding: 10px;
+            }
+
+            img {
+                max-width: 80px; /* Smaller images on small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Job Feed</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Openings</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Skills</th>
+                <th>Action</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td>
+                    {% if job.Image %}
+                        <img src="{{ job.Image.url }}" alt="Job Image">  <!-- Display the image -->
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>{{ job.title }}</td>
+                <td>{{ job.Number_of_opening }}</td>
+                <td>{{ job.get_category_display }}</td>  <!-- Using get_<field_name>_display to get the human-readable name -->
+                <td>{{ job.Job_descriptons|truncatewords:20 }}</td>  <!-- Truncate the description to show a preview -->
+                <td>{{ job.skill }}</td>
+                <td>
+                    <a href="#">Edit</a>  <a href="{% url 'deleteJob' job.id %}" class="delete">Delete</a> 
+                </td>
+                
+                 
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No job postings available.</td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+    
+    <a href="{% url 'add_job' %}">Add a new job</a>  <!-- Link to add a new job -->
+</body>
+</html>
+
+
+{% endblock body %}
