@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,21 +27,26 @@
 
         .job-list {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap; /* Allow wrapping */
             gap: 15px;
+            justify-content: center; /* Center the cards */
         }
 
         .job-card {
             border: 1px solid #ccc;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 8px;
             background-color: #fff;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s ease;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            max-width: 250px; /* Set a maximum width for the job cards */
+            width: 100%; /* Allow full width up to max-width */
+            margin: 0 auto; /* Center cards in their container */
         }
 
         .job-card:hover {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
         }
 
         .job-image {
@@ -78,20 +82,54 @@
             font-size: 0.9em;
             color: #777; /* Lighter grey for footer text */
         }
+
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Job Listings</h1>
-    </header>
+
     <div class="container my-5">
         <div class="row justify-content-center">
-    
             <div class="col-md-6">
                 <form class="input-group" action="{% url 'searchJob' %}" method="GET">
                     {% csrf_token %}
-                    <input type="text" class="form-control" placeholder="Job Title, Skills" name="query"
-                        aria-label="Job Title">
+                    <input type="text" class="form-control" placeholder="Job Title, Skills" name="query" aria-label="Job Title">
                     <button class="btn btn-primary" type="submit">Search</button>
                 </form>
             </div>
@@ -106,16 +144,23 @@
                         <p><strong>Category:</strong> {{ job.category }}</p>
                         <p><strong>Number of Openings:</strong> {{ job.Number_of_opening }}</p>
                         <p><strong>Skills Required:</strong> {{ job.skill }}</p>
-                        <p><strong>Description:</strong> {{ job.Job_descriptons }}</p>
+                        
                         {% if job.Image %}
                             <img src="{{ job.Image.url }}" alt="Image for {{ job.title }}" class="job-image">
                         {% endif %}
-                        <p><em>Posted on: {{ job.created_at|date:"Y-m-d H:i" }}</em></p>
 
-                        {% if request.user.user_type == 'seeker' %}
-                        <a href="{% url 'applyJob' job.id %}">Apply Job</a>
-                        {% endif %} 
+                        <br>
+                        <br>
                         
+                        
+                        
+                        
+                        <a href="#" onclick="openModal('{{ job.title }}', '{{ job.Job_descriptons }}')">Details</a>
+                        
+                        {% if request.user.user_type == 'seeker' %}
+                        
+                            <a href="{% url 'applyJob' job.id %}">Apply Job</a>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
@@ -123,12 +168,40 @@
             <p>No job listings available at this time.</p>
         {% endif %}
     </main>
+    
+    <!-- Modal for job details -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
     <footer>
-        <p>&copy; {{ current_year }} create by Arnab</p> <!-- You can use {% now "Y" %} for current year -->
+        <p>&copy; {{ current_year }} created by Arnab</p>
     </footer>
+
+    <script>
+        function openModal(title, description) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDescription').innerText = description;
+            document.getElementById('jobModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('jobModal').style.display = "none";
+        }
+
+        // Close the modal when the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('jobModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>
 
-
-    
 {% endblock body %}

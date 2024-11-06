@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.shortcuts import render, redirect,get_list_or_404,get_object_or_404
 from django.http import HttpResponse
 from myapp.models import *
@@ -9,95 +10,103 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db import IntegrityError
 from django.http import Http404
-
+from django.core.files.storage import FileSystemStorage
 from django.db.models import Q 
 
 def Homepage(request):
+
+    total_jobs = Jobmodel.objects.all().count()
+    total_users = CustomUser.objects.all().count()
+    total_applications = Application.objects.all().count()
+
+    context = {
+        'total_jobs': total_jobs,
+        'total_users': total_users,
+        'total_applications': total_applications,
+    }
     
     
-    return render(request,'Homepage.html')
+    return render(request,'Homepage.html',context)
     
     
 
 def loginpage(request):
     if request.method == 'POST':
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        
+        user_name=request.POST.get("username")
+        pass_word=request.POST.get("password")
 
-        if not username or not password:
-            messages.warning(request, "Both username and password are required")
-            return render(request, "loginPage.html")
+        try:
+            user = authenticate(request, username=user_name, password=pass_word)
 
-        user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('Homepage') 
+            else:
+                return redirect('loginpage')
 
-        if user is not None:
-            login(request, user)
-            messages.success(request, "Login Successfully")
-            return redirect("Homepage")
-        else:
-            messages.warning(request, "Invalid username or password")
+        except CustomUser.DoesNotExist:
+            return redirect('loginpage')
+
+    return render(request, 'loginpage.html')
     
-    return render (request,'loginpage.html')
 
 
 def Registerpage(request):
-    
-     
-
-    
-    
-    
-    if request.method == 'POST':
-        username = request.POST['username']
+    if request.method=='POST':
         
+        username = request.POST['username']
         email = request.POST['email']
-        Profile_Pic = request.POST['Profile_Pic']
-        confirm_password = request.POST['confirm_password']
+        Profile_Pic = request.FILES.get('Profile_Pic')
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
         user_type = request.POST.get('user_type')
-
-        if password == confirm_password:
-            if CustomUser.objects.filter(username=username).exists():
-                messages.error(request, 'Username already taken.')
-                return redirect('Registerpage')
-            elif CustomUser.objects.filter(email=email).exists():
-                messages.error(request, 'Email already registered.')
-                return redirect('Registerpage')
-            else:
-                user = CustomUser.objects.create_user(
+    
+        
+        if password==confirm_password:
+            
+            
+            user=CustomUser.objects.create_user(
                 username=username,
                 email=email,
                 Profile_Pic=Profile_Pic,
                 password=password,
                 user_type=user_type,
                 
-                )
+            )
+            if user_type=='seeker':
+                seekerProfileModel.objects.create(user=user)
                 
-                if user_type=='recuriters':
-                    recuritersProfileModel.objects.create(user=user)
-                    
-                elif user_type=='seeker':
-                    seekerProfileModel.objects.create(user=user)
-                    
-                
-                return redirect("loginpage")
-        else:
-            return redirect('loginpage')
+            elif user_type=='recuriters':
+                recuritersProfileModel.objects.create(user=user)
+            
+            return redirect("loginpage")
+            
+    return render(request,"Registerpage.html")
+    
+     
 
-    return render(request, 'Registerpage.html')
+    
+    
+    
+    
 
 def logoutPage(request):
     logout(request)
-    messages.success(request, "You have been logged out successfully.")
+    
     return redirect("loginpage")
 
 
 
 def profilePage(request):
+
+    Seeker = seekerProfileModel.objects.all()  # Fetch all job listings
+    context = {
+        'Seeker': Seeker
+    }
     
     
-    return render(request, "profilePage.html", )
+    return render(request, "profilePage.html", context)
 
 
 def add_job(request):
@@ -133,7 +142,7 @@ def created_JOb(request):
     return render(request, 'created_JOb.html', {'jobs': jobs})
 
 def job_feed(request):
-    jobs = Jobmodel.objects.all()  # Fetch all job listings
+    jobs = Jobmodel.objects.all()  
     context = {
         'jobs': jobs
     }
@@ -181,7 +190,8 @@ def searchJob(req):
 
     if query:
         jobs = Jobmodel.objects.filter(Q(title__icontains = query)
-                                        |Q(skill__icontains = query))
+                                        |Q(skill__icontains = query)
+                                        |Q(Job_descriptons__icontains = query))
 
     else:
         jobs = Jobmodel.objects.none()
@@ -192,6 +202,88 @@ def searchJob(req):
     }
 
     return render(req, 'search.html', context)
+
+
+
+
+def edit_profile(request):
+    user=request.user
+    if request.method=="POST":
+        
+        user.username=request.POST.get('username')
+        user.email=request.POST.get('email')
+        user.contact_no = request.POST.get('contact_no')
+        user.skills = request.POST.get('skills')
+        user_skills = CustomUser.SKILLS 
+        
+        
+       
+        user.Profile_Pic=request.FILES.get('Profile_Pic')
+        user.save()
+        
+        return redirect('profilePage',{'user_skills': user_skills})
+    
+    
+    return render(request,'edit_profile.html')
+
+def editProfile(req):
+
+    current_user = req.user
+
+    if req.method == 'POST':
+        current_user.username = req.POST.get('username')
+        current_user.email = req.POST.get('email')
+        current_user.contact_no = req.POST.get('contact_no')
+        
+        if req.FILES.get('Profile_Pic'):
+            current_user.Profile_Pic = req.FILES.get('Profile_Pic')
+        
+        current_user.save()
+        return redirect('profilePage')
+
+    return render(req,'edit_profile.html')
+
+def editjob(req,job_id):
+    current_user=req.user
+   
+    if req.method == 'POST':
+        
+        job_id=req.POST.get('job_id')
+        
+        job=Jobmodel(
+            id=job_id,
+            user=current_user,
+            title=req.POST.get('title'),
+            Number_of_opening=req.POST.get('Number_of_opening'),
+            category=req.POST.get('category'),
+            Job_descriptons=req.POST.get('Job_descriptons'),
+            skill=req.POST.get('skill'),
+            Image=req.FILES.get('Image'),
+
+        )
+        job.save()
+        return redirect('created_JOb')
+        
+    jobs=Jobmodel.objects.get(id=job_id)
+    
+    context={
+        'job':jobs,
+    }
+    
+    return render(req,'editJob.html',context)
+
+def skillMatchingPage(request):
+    
+    user=request.user
+    
+    mySkill=user.seekerProfile.skills
+    jobs=Jobmodel.objects.filter(skill=mySkill)
+    context={
+        'jobs':jobs
+    }
+    print(mySkill)
+    
+    return render(request,"skillMatchingPage.html",context)
 
 
 

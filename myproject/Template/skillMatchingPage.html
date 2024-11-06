@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #007BFF; /* Blue color for the header */
+        }
+
+        .job-list {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 15px;
+            justify-content: center; /* Center the cards */
+        }
+
+        .job-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            max-width: 250px; /* Set a maximum width for the job cards */
+            width: 100%; /* Allow full width up to max-width */
+            margin: 0 auto; /* Center cards in their container */
+        }
+
+        .job-card:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .job-image {
+            max-width: 100%;
+            height: 100px;
+            width: 100px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #555; /* Darker grey for labels */
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007BFF; /* Blue background for buttons */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777; /* Lighter grey for footer text */
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form class="input-group" action="{% url 'searchJob' %}" method="GET">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" placeholder="Job Title, Skills" name="query" aria-label="Job Title">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <main>
+        <h1>My Skill is ""{{request.user.skills}}""</h1>
+        {% if jobs %}
+            <div class="job-list">
+                {% for job in jobs %}
+                    <div class="job-card">
+                        <h2>{{ job.title }}</h2>
+                        <p><strong>Category:</strong> {{ job.category }}</p>
+                        <p><strong>Number of Openings:</strong> {{ job.Number_of_opening }}</p>
+                        <p><strong>Skills Required:</strong> {{ job.skill }}</p>
+                        
+                        {% if job.Image %}
+                            <img src="{{ job.Image.url }}" alt="Image for {{ job.title }}" class="job-image">
+                        {% endif %}
+
+                        <br>
+                        <br>
+                        
+                        
+                        
+                        
+                        <a href="#" onclick="openModal('{{ job.title }}', '{{ job.Job_descriptons }}')">Details</a>
+                        
+                        {% if request.user.user_type == 'seeker' %}
+                        
+                            <a href="{% url 'applyJob' job.id %}">Apply Job</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No job listings available at this time.</p>
+        {% endif %}
+    </main>
+    
+    <!-- Modal for job details -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; {{ current_year }} created by Arnab</p>
+    </footer>
+
+    <script>
+        function openModal(title, description) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDescription').innerText = description;
+            document.getElementById('jobModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('jobModal').style.display = "none";
+        }
+
+        // Close the modal when the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('jobModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
+
+{% endblock body %}

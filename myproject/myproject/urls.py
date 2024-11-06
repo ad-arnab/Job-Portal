@@ -11,6 +11,10 @@ urlpatterns = [
     path('', Registerpage,name='Registerpage'),
     path('logoutPage', logoutPage,name='logoutPage'),
     path('profilePage', profilePage,name='profilePage'),
+    path('skillMatchingPage', skillMatchingPage,name='skillMatchingPage'),
+    path('edit_profile', edit_profile,name='edit_profile'),
+    path('editjob/<int:job_id>/', editjob, name='edit_job'),
+    
     
     path('add_job', add_job, name='add_job'),
     path('created_JOb', created_JOb, name='created_JOb'),

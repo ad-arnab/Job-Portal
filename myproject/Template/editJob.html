@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block body %}
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Optional CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px; /* Set maximum width */
+            margin: auto; /* Center the container */
+        }
+        h1 {
+            text-align: center;
+            color: #343a40;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%; /* Full width */
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .form-group button {
+            width: 100%; /* Full width button */
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Job</h1>
+        <form action="{% url 'edit_job' job.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <input type="hidden" name="job_id" value="{{ job.id }}">  
+
+            <div class="form-group">
+                <label for="title">Job Title:</label>
+                <input type="text" id="title" name="title" maxlength="100" value="{{ job.title }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="number_of_opening">Number of Openings:</label>
+                <input type="number" id="number_of_opening" name="Number_of_opening" value="{{ job.Number_of_opening }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category" required>
+                    <option value="full_time" {% if job.category == 'full_time' %}selected{% endif %}>Full Time</option>
+                    <option value="part_time" {% if job.category == 'part_time' %}selected{% endif %}>Part Time</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="job_descriptions">Job Description:</label>
+                <textarea id="job_descriptions" name="Job_descriptons" maxlength="200" required>{{ job.Job_descriptons }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="skill">Skills:</label>
+                <select id="skill" name="skill" required>
+                    <option value="programming" {% if job.skill == 'programming' %}selected{% endif %}>Programming</option>
+                    <option value="networking" {% if job.skill == 'networking' %}selected{% endif %}>Networking</option>
+                    <option value="hardware" {% if job.skill == 'hardware' %}selected{% endif %}>Hardware</option>
+                    <option value="software" {% if job.skill == 'software' %}selected{% endif %}>Software</option>
+                    <option value="data_science" {% if job.skill == 'data_science' %}selected{% endif %}>Data Science</option>
+                    <option value="cyber_security" {% if job.skill == 'cyber_security' %}selected{% endif %}>Cyber Security</option>
+                    <option value="digital_marketing" {% if job.skill == 'digital_marketing' %}selected{% endif %}>Digital Marketing</option>
+                    <option value="cloud_computing" {% if job.skill == 'cloud_computing' %}selected{% endif %}>Cloud Computing</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="Profile_Pic" class="form-label">Profile Picture</label>
+                <br>
+                {% if job.Image %}
+                <img src="/{{ job.Image }}" alt="Profile Picture" class="profile-pic" width="100" height="100">
+                {% endif %}
+                <br>
+                <input type="file" class="form-control" id="Image" name="Image" onchange="previewImage(event)">
+                <div id="image-preview" style="margin-top: 10px;"></div>
+            </div>
+            
+
+            <div class="form-group">
+                <button type="submit">Update Job</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+{% endblock body %}

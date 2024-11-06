@@ -1,11 +1,15 @@
 <nav>
     <div class="logo">Job Portal</div>
     <ul class="nav-links">
-
+        <li><a href="{% url 'Homepage' %}">Home</a></li>
         <li><a href="{% url 'job_feed' %}">Job Feed</a></li>
-
+        
         {% if request.user.user_type == 'recuriters' %}
         <li><a href="{% url 'add_job' %}">Add Job</a></li>
+        {% endif %}
+        {% if request.user.user_type == 'seeker' %}
+        <li><a href="{% url 'skillMatchingPage' %}">Skill Matching Page</a></li>
+
         {% endif %}
 
 

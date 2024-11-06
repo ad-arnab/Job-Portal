@@ -133,7 +133,9 @@
                 <td>{{ job.Job_descriptons|truncatewords:20 }}</td>  <!-- Truncate the description to show a preview -->
                 <td>{{ job.skill }}</td>
                 <td>
-                    <a href="#">Edit</a>  <a href="{% url 'deleteJob' job.id %}" class="delete">Delete</a> 
+                    <a href="{% url 'edit_job' job_id=job.id %}">Edit</a>
+
+                    <a href="{% url 'deleteJob' job.id %}" class="delete">Delete</a>
                 </td>
                 
                  

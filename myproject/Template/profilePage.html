@@ -6,16 +6,16 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
+        /* body {
             background-color: #f0f0f0;
-        }
+        } */
 
         .resume-container {
             background: white;
@@ -53,12 +53,13 @@
             margin: 5px;
         }
     </style>
-</head>
+
 <body>
     <div class="container resume-container">
         <div class="profile-header">
             <img src="/{{request.user.Profile_Pic}}" alt="Profile Picture" class="profile-pic">
             <h1 class="profile-name">{{request.user.username}}</h1>
+            
             
             
             {% if request.user.user_type == 'recuriters' %}
@@ -70,13 +71,13 @@
 
             <div class="text-center">
                 
-                <a href="#" class="btn btn-primary">Edit Profile</a>
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
                 
                 </div>
 
             
             
-            <h2 class="profile-designation">{{ Information.Designation }}</h2>
+            <p><strong>Skill:</strong>{{ user.skills }}</p>
             <p><strong>Email:</strong>{{ user.email }}</p>
             <p><strong>Contact Number:</strong>{{request.user.contact_no}}</p>
             
