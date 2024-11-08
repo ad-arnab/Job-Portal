@@ -178,7 +178,7 @@ def applyJob(req, job_id):
         )
         
         apply.save()
-        return redirect('job_feed')
+        return redirect('applied_jobs')
 
 
     return render(req, 'apply_job.html',context)
@@ -213,35 +213,20 @@ def edit_profile(request):
         user.username=request.POST.get('username')
         user.email=request.POST.get('email')
         user.contact_no = request.POST.get('contact_no')
-        user.skills = request.POST.get('skills')
-        user_skills = CustomUser.SKILLS 
+        # user.skills = request.POST.get('skills')
+        # user_skills = CustomUser.SKILLS 
         
         
        
         user.Profile_Pic=request.FILES.get('Profile_Pic')
         user.save()
         
-        return redirect('profilePage',{'user_skills': user_skills})
+        return redirect('profilePage',)
     
     
     return render(request,'edit_profile.html')
 
-def editProfile(req):
 
-    current_user = req.user
-
-    if req.method == 'POST':
-        current_user.username = req.POST.get('username')
-        current_user.email = req.POST.get('email')
-        current_user.contact_no = req.POST.get('contact_no')
-        
-        if req.FILES.get('Profile_Pic'):
-            current_user.Profile_Pic = req.FILES.get('Profile_Pic')
-        
-        current_user.save()
-        return redirect('profilePage')
-
-    return render(req,'edit_profile.html')
 
 def editjob(req,job_id):
     current_user=req.user
@@ -284,6 +269,19 @@ def skillMatchingPage(request):
     print(mySkill)
     
     return render(request,"skillMatchingPage.html",context)
+
+def applied_jobs(request):
+    
+    if request.user.is_authenticated:
+        
+        applications = Application.objects.filter(user=request.user)
+
+        
+        return render(request, 'applied_jobs.html', {'applications': applications})
+
+    else:
+        
+        return redirect('login')  
 
 
 

@@ -13,9 +13,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* body {
-            background-color: #f0f0f0;
-        } */
+        
 
         .resume-container {
             background: white;
@@ -77,7 +75,7 @@
 
             
             
-            <p><strong>Skill:</strong>{{ user.skills }}</p>
+            <p><strong>Skill:</strong>{{ request.user.skills }}</p>
             <p><strong>Email:</strong>{{ user.email }}</p>
             <p><strong>Contact Number:</strong>{{request.user.contact_no}}</p>
             

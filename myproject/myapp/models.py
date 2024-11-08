@@ -108,10 +108,22 @@ class Jobmodel(models.Model):
     
 class Application(models.Model):
 
+    SKILLS = [
+        ('programming', 'Programming'),
+        ('networking', 'Networking'),
+        ('hardware', 'Hardware'),
+        ('software', 'Software'),
+        ('data science', 'Data Science'),
+        ('cyber security', 'Cyber Security'),
+        ('digital marketing', 'Digital Marketing'),
+        ('cloud computing', 'Cloud Computing'),
+
+    ]
+
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
     job = models.ForeignKey(Jobmodel,on_delete=models.CASCADE,null=True)
     cover = models.CharField(max_length=500, null=True)
-    skills = models.CharField(max_length=100, null=True)
+    skills=models.CharField(choices=SKILLS,max_length=200,null=True)
     resume = models.ImageField(upload_to='Media/Resume', null=True)
 
     

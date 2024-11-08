@@ -17,6 +17,7 @@ urlpatterns = [
     
     
     path('add_job', add_job, name='add_job'),
+    path('applied_jobs', applied_jobs, name='applied_jobs'),
     path('created_JOb', created_JOb, name='created_JOb'),
     path('job_feed', job_feed, name='job_feed'),
     path('deleteJob/<int:job_id>',deleteJob, name="deleteJob"),

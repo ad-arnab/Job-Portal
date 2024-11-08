@@ -14,6 +14,8 @@
             <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="{{job.title}}" required
                 readonly>
         </div>
+        <br>
+        
 
 
         <!-- Cover -->
@@ -21,18 +23,34 @@
             <label for="cover" class="form-label">Cover Letter</label>
             <textarea class="form-control" id="cover" name="cover" rows="3" required></textarea>
         </div>
+        <br>
+       
 
         <!-- Skills -->
         <div class="mb-3">
-            <label for="skills" class="form-label">Skills</label>
-            <input type="text" class="form-control" id="skills" name="skills" required>
-        </div>
+            <label for="skill">Skills:</label>
+                <select id="skill" name="skills" required>
+                    <option value="programming">Select Skill</option>
+                    <option value="programming">Programming</option>
+                    <option value="networking">Networking</option>
+                    <option value="hardware">Hardware</option>
+                    <option value="software">Software</option>
+                    <option value="data science">Data Science</option>
+                    <option value="cyber security">Cyber Security</option>
+                    <option value="digital marketing">Digital Marketing</option>
+                    <option value="cloud computing">Cloud Computing</option>
+                </select>
+        </div><br>
+        
 
         <!-- Resume  -->
         <div class="mb-3">
             <label for="resume" class="form-label">Upload Resume</label>
             <input type="file" class="form-control" id="resume" name="resume">
         </div>
+
+        <br>
+        
 
         <!-- Apply Button -->
         <div class="text-center">
